@@ -11,7 +11,10 @@
   "dependencies": {
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.4.6"
+    "next": "15.4.6",
+    "gray-matter": "^4.0.3",
+    "next-mdx-remote": "^5.0.0",
+    "@vercel/og": "^0.6.2"
   },
   "devDependencies": {
     "typescript": "^5",
@@ -20,6 +23,7 @@
     "@types/react-dom": "^19",
     "@tailwindcss/postcss": "^4",
     "tailwindcss": "^4",
+    "@tailwindcss/typography": "^0.5.10",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
     "@eslint/eslintrc": "^3"
