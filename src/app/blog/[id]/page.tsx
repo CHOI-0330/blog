@@ -108,11 +108,8 @@ export default function BlogPostDetail() {
               <Link href="/about" className="text-gray-700 hover:text-gray-900">
                 自己紹介
               </Link>
-              <Link
-                href="/projects"
-                className="text-gray-700 hover:text-gray-900"
-              >
-                プロジェクト
+              <Link href="/blog" className="text-gray-700 hover:text-gray-900">
+                ブログ
               </Link>
               <Link href="/blog" className="text-blue-600 font-semibold">
                 ブログ

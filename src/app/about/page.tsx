@@ -19,12 +19,6 @@ export default function About() {
               <Link href="/about" className="text-blue-600 font-semibold">
                 自己紹介
               </Link>
-              <Link
-                href="/projects"
-                className="text-gray-700 hover:text-gray-900"
-              >
-                プロジェクト
-              </Link>
               <Link href="/blog" className="text-gray-700 hover:text-gray-900">
                 ブログ
               </Link>

@@ -63,12 +63,6 @@ export default function Contact() {
               <Link href="/about" className="text-gray-700 hover:text-gray-900">
                 自己紹介
               </Link>
-              <Link
-                href="/projects"
-                className="text-gray-700 hover:text-gray-900"
-              >
-                プロジェクト
-              </Link>
               <Link href="/blog" className="text-gray-700 hover:text-gray-900">
                 ブログ
               </Link>

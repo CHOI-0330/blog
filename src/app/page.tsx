@@ -1,47 +1,41 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
+import MobileNav from "@/components/MobileNav";
 import { SiteConfig } from "@/lib/firestore";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showIntro, setShowIntro] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
-    fetchSiteConfig();
+    (async () => {
+      try {
+        const res = await fetch("/api/site-config");
+        if (res.ok) setConfig(await res.json());
+      } catch (e) {
+        console.error("사이트 설정 가져오기 오류:", e);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
-  const fetchSiteConfig = async () => {
-    try {
-      const response = await fetch("/api/site-config");
-      if (response.ok) {
-        const data = await response.json();
-        setConfig(data);
-      }
-    } catch (error) {
-      console.error("사이트 설정 가져오기 오류:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => setShowIntro(false), 2500);
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">読み込み中...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // 기본값 설정
   const defaultConfig: SiteConfig = {
     siteTitle: "ポートフォリオブログ",
-    heroTitle: "就職活動のための\nポートフォリオブログ",
-    heroSubtitle: "技術と経験を共有し、未来への一歩を踏み出しましょう",
+    heroTitle: "Front-End",
+    heroSubtitle: "就職活動のためのポートフォリオブログ",
     heroDescription: "技術と経験を共有し、未来への一歩を踏み出しましょう",
     featuresTitle: "私の強み",
     featuresDescription:
@@ -58,174 +52,148 @@ export default function Home() {
     techStack: ["React / Next.js", "TypeScript", "Tailwind CSS", "Node.js"],
     contactInfo: {
       email: "example@email.com",
-      github: "github.com/username",
-      linkedin: "linkedin.com/in/username",
+      github: "https://github.com/username",
+      linkedin: "https://velog.io/@username",
     },
   };
 
-  const currentConfig = config || defaultConfig;
+  const current = useMemo(() => {
+    const base = { ...defaultConfig, ...config };
+    base.contactInfo = {
+      ...defaultConfig.contactInfo,
+      ...(config?.contactInfo || {}),
+    };
+    base.techStack = config?.techStack?.length
+      ? config.techStack
+      : defaultConfig.techStack;
+    return base;
+  }, [config]);
 
-  // techStack이 undefined일 경우를 대비해 안전하게 처리
-  const safeTechStack = currentConfig.techStack || defaultConfig.techStack;
-  const safeContactInfo =
-    currentConfig.contactInfo || defaultConfig.contactInfo;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 grid place-items-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-black/70 mx-auto" />
+          <p className="mt-4 text-black/70">読み込み中...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
+    <div className="min-h-screen relative bg-gray-50 overflow-hidden">
+      <AnimatePresence>
+        {showIntro && (
+          <motion.div
+            className="fixed inset-0 flex items-center justify-center bg-gray-50 z-50"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+          >
+            <motion.h1
+              className="text-2xl md:text-5xl font-bold text-black"
+              initial={{ scale: 1.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{
+                scale: 1,
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.6, ease: "easeInOut" },
+              }}
+              transition={{ duration: 1, ease: "easeOut" }}
+            >
+              {current.heroSubtitle}
+            </motion.h1>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.header
+        className="fixed top-0 left-0 right-0 z-40 bg-gray-50 border-b border-black/10"
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: showIntro ? -80 : 0, opacity: showIntro ? 0 : 1 }}
+        transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
+      >
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link href="/" className="text-xl font-bold text-gray-900">
-                {currentConfig.siteTitle}
-              </Link>
-            </div>
-            <div className="flex items-center space-x-8">
-              <Link href="/" className="text-blue-600 font-semibold">
-                ホーム
-              </Link>
-              <Link href="/about" className="text-gray-700 hover:text-gray-900">
-                自己紹介
-              </Link>
-              <Link href="/blog" className="text-gray-700 hover:text-gray-900">
-                ブログ
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-6">
+              <Link
+                href={current.contactInfo.github || "#"}
+                target="_blank"
+                rel="noreferrer"
+                className="underline underline-offset-[6px] decoration-1 hover:opacity-70 transition text-sm md:text-base"
+              >
+                GitHub
               </Link>
               <Link
-                href="/contact"
-                className="text-gray-700 hover:text-gray-900"
+                href={current.contactInfo.linkedin || "#"}
+                target="_blank"
+                rel="noreferrer"
+                className="underline underline-offset-[6px] decoration-1 hover:opacity-70 transition text-sm md:text-base"
               >
-                お問い合わせ
+                Velog
               </Link>
+            </div>
+            <div className="hidden md:flex items-center space-x-8">
+              {[
+                { label: "ホーム", href: "/" },
+                { label: "自己紹介", href: "/about" },
+                { label: "ブログ", href: "/blog" },
+                { label: "お問い合わせ", href: "/contact" },
+              ].map((n) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  className={`transition-colors border-b-2 pb-1 ${
+                    pathname === n.href
+                      ? "text-black font-semibold border-black"
+                      : "text-black/80 hover:text-black border-transparent hover:border-black/60"
+                  }`}
+                >
+                  {n.label}
+                </Link>
+              ))}
+            </div>
+            <div className="md:hidden">
+              <MobileNav siteTitle={current.siteTitle} currentPath={pathname} />
             </div>
           </div>
         </nav>
-      </header>
+      </motion.header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 whitespace-pre-line">
-              {currentConfig.heroTitle}
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100">
-              {currentConfig.heroDescription}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/about"
-                className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-              >
-                自己紹介を見る
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              {currentConfig.featuresTitle}
-            </h2>
-            <p className="text-lg text-gray-600">
-              {currentConfig.featuresDescription}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="text-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-              <h3 className="text-xl font-semibold mb-2">
-                {currentConfig.aboutCardTitle}
-              </h3>
-              <p className="text-gray-600">
-                {currentConfig.aboutCardDescription}
-              </p>
-            </div>
-
-            <div className="text-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-              <h3 className="text-xl font-semibold mb-2">
-                {currentConfig.blogCardTitle}
-              </h3>
-              <p className="text-gray-600">
-                {currentConfig.blogCardDescription}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-gray-900 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">{currentConfig.ctaTitle}</h2>
-          <p className="text-xl text-gray-300 mb-8">
-            {currentConfig.ctaDescription}
+      <motion.section
+        className="relative min-h-screen grid place-items-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: showIntro ? 0 : 1 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+      >
+        <div className="text-center">
+          <h1 className="text-2xl md:text-4xl font-medium text-black tracking-tight">
+            프론트엔드 개발자 <strong className="font-extrabold">최지은</strong>{" "}
+            입니다.
+          </h1>
+          <p className="mt-3 text-sm md:text-base text-black/70">
+            사용자를 생각하는{" "}
+            <strong className="font-semibold">역지사지</strong> 마인드,
+            <br className="hidden md:block" />
+            포기하지 않고 <strong className="font-semibold">책임감</strong> 있게
+            일하는 개발자입니다.
           </p>
-          <Link
-            href="/contact"
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
-          >
-            お問い合わせ
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">
-                {currentConfig.siteTitle}
-              </h3>
-              <p className="text-gray-300">{currentConfig.footerDescription}</p>
-            </div>
-            <div>
-              <h4 className="text-md font-semibold mb-4">ナビゲーション</h4>
-              <ul className="space-y-2 text-gray-300">
-                <li>
-                  <Link href="/" className="hover:text-white">
-                    ホーム
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="hover:text-white">
-                    自己紹介
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blog" className="hover:text-white">
-                    ブログ
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-md font-semibold mb-4">技術スタック</h4>
-              <ul className="space-y-2 text-gray-300">
-                {safeTechStack.map((tech, index) => (
-                  <li key={index}>{tech}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-md font-semibold mb-4">お問い合わせ</h4>
-              <ul className="space-y-2 text-gray-300">
-                <li>Email: {safeContactInfo.email}</li>
-                <li>GitHub: {safeContactInfo.github}</li>
-                <li>LinkedIn: {safeContactInfo.linkedin}</li>
-              </ul>
+          <div className="mt-10">
+            <div className="w-[220px] h-[280px] md:w-[280px] md:h-[340px] overflow-hidden rounded-[28px] grayscale contrast-110 shadow-xl ring-1 ring-black/5 bg-white mx-auto">
+              <Image
+                src="/profile.jpg"
+                alt="Profile"
+                width={560}
+                height={680}
+                className="w-full h-full object-cover"
+                priority
+              />
             </div>
           </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-            <p>&copy; 2024 {currentConfig.siteTitle}. All rights reserved.</p>
-          </div>
+          <div className="mt-8 animate-bounce text-black/60">⌄⌄</div>
         </div>
-      </footer>
+      </motion.section>
     </div>
   );
 }

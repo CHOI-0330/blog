@@ -26,18 +26,6 @@ export interface BlogPost {
   updatedAt?: any;
 }
 
-export interface Project {
-  id?: string;
-  title: string;
-  description: string;
-  technologies: string[];
-  image?: string;
-  liveUrl?: string;
-  githubUrl?: string;
-  createdAt?: any;
-  updatedAt?: any;
-}
-
 export interface SiteConfig {
   id?: string;
   siteTitle: string;
@@ -153,84 +141,6 @@ export const blogService = {
 };
 
 // 프로젝트 관련 함수들
-export const projectService = {
-  // 모든 프로젝트 가져오기
-  async getAllProjects(): Promise<Project[]> {
-    try {
-      const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Project[];
-    } catch (error) {
-      console.error("프로젝트 가져오기 오류:", error);
-      throw error;
-    }
-  },
-
-  // 특정 프로젝트 가져오기
-  async getProjectById(id: string): Promise<Project | null> {
-    try {
-      const docRef = doc(db, "projects", id);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        return { id: docSnap.id, ...docSnap.data() } as Project;
-      } else {
-        return null;
-      }
-    } catch (error) {
-      console.error("프로젝트 가져오기 오류:", error);
-      throw error;
-    }
-  },
-
-  // 새 프로젝트 생성
-  async createProject(
-    projectData: Omit<Project, "id" | "createdAt" | "updatedAt">
-  ): Promise<string> {
-    try {
-      const docRef = await addDoc(collection(db, "projects"), {
-        ...projectData,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-      return docRef.id;
-    } catch (error) {
-      console.error("프로젝트 생성 오류:", error);
-      throw error;
-    }
-  },
-
-  // 프로젝트 수정
-  async updateProject(
-    id: string,
-    projectData: Partial<Project>
-  ): Promise<void> {
-    try {
-      const docRef = doc(db, "projects", id);
-      await updateDoc(docRef, {
-        ...projectData,
-        updatedAt: serverTimestamp(),
-      });
-    } catch (error) {
-      console.error("프로젝트 수정 오류:", error);
-      throw error;
-    }
-  },
-
-  // 프로젝트 삭제
-  async deleteProject(id: string): Promise<void> {
-    try {
-      const docRef = doc(db, "projects", id);
-      await deleteDoc(docRef);
-    } catch (error) {
-      console.error("프로젝트 삭제 오류:", error);
-      throw error;
-    }
-  },
-};
 
 export const siteConfigService = {
   async getSiteConfig(): Promise<SiteConfig | null> {
