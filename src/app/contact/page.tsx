@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { contactService } from "@/lib/firestore";
+import SiteHeader from "@/components/SiteHeader";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -47,41 +47,16 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Link href="/" className="text-xl font-bold text-gray-900">
-                ポートフォリオブログ
-              </Link>
-            </div>
-            <div className="flex items-center space-x-8">
-              <Link href="/" className="text-gray-700 hover:text-gray-900">
-                ホーム
-              </Link>
-              <Link href="/about" className="text-gray-700 hover:text-gray-900">
-                自己紹介
-              </Link>
-              <Link href="/blog" className="text-gray-700 hover:text-gray-900">
-                ブログ
-              </Link>
-              <Link href="/contact" className="text-blue-600 font-semibold">
-                お問い合わせ
-              </Link>
-            </div>
-          </div>
-        </nav>
-      </header>
+      <SiteHeader />
 
       {/* Hero Section */}
-      <section className="bg-white py-20">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl font-bold text-black mb-6">
               お問い合わせ
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-black/70 mb-8">
               新しい機会やプロジェクトについてお話ししましょう
             </p>
           </div>
@@ -94,7 +69,7 @@ export default function Contact() {
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl font-bold text-black mb-6">
                 メッセージを送る
               </h2>
 
@@ -115,7 +90,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-black/70 mb-2"
                   >
                     お名前
                   </label>
@@ -126,7 +101,7 @@ export default function Contact() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                     placeholder="山田太郎"
                   />
                 </div>
@@ -134,7 +109,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-black/70 mb-2"
                   >
                     メールアドレス
                   </label>
@@ -145,7 +120,7 @@ export default function Contact() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                     placeholder="example@email.com"
                   />
                 </div>
@@ -153,7 +128,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="subject"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-black/70 mb-2"
                   >
                     件名
                   </label>
@@ -164,7 +139,7 @@ export default function Contact() {
                     value={formData.subject}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                     placeholder="プロジェクトについて"
                   />
                 </div>
@@ -172,7 +147,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-black/70 mb-2"
                   >
                     メッセージ
                   </label>
@@ -183,7 +158,7 @@ export default function Contact() {
                     onChange={handleInputChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                     placeholder="メッセージを入力してください..."
                   ></textarea>
                 </div>
@@ -191,7 +166,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className="w-full bg-black text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? "送信中..." : "メッセージを送る"}
                 </button>
@@ -200,22 +175,22 @@ export default function Contact() {
 
             {/* Contact Information */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl font-bold text-black mb-6">
                 連絡先情報
               </h2>
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
-                    <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 text-xl">📧</span>
+                    <div className="h-12 w-12 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-black text-xl">📧</span>
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-black">
                       メール
                     </h3>
-                    <p className="text-gray-600">choi.su000330@gmail.com</p>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-black/70">choi.su000330@gmail.com</p>
+                    <p className="text-black/60 text-sm">
                       通常24時間以内に返信いたします
                     </p>
                   </div>
@@ -223,16 +198,16 @@ export default function Contact() {
 
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
-                    <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
-                      <span className="text-green-600 text-xl">📱</span>
+                    <div className="h-12 w-12 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-black text-xl">📱</span>
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-black">
                       電話
                     </h3>
-                    <p className="text-gray-600">+82-10-1234-5678</p>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-black/70">+82-10-1234-5678</p>
+                    <p className="text-black/60 text-sm">
                       平日 9:00-18:00 (KST)
                     </p>
                   </div>
@@ -240,31 +215,31 @@ export default function Contact() {
 
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
-                    <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center">
-                      <span className="text-purple-600 text-xl">📍</span>
+                    <div className="h-12 w-12 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-black text-xl">📍</span>
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-black">
                       所在地
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-black/70">
                       ソウル特別市江南区
                       <br />
                       大韓民国
                     </p>
-                    <p className="text-gray-500 text-sm">リモートワーク可能</p>
+                    <p className="text-black/60 text-sm">リモートワーク可能</p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
-                    <div className="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center">
-                      <span className="text-orange-600 text-xl">🌐</span>
+                    <div className="h-12 w-12 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-black text-xl">🌐</span>
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-black">
                       ソーシャルメディア
                     </h3>
                     <div className="space-y-2">
@@ -272,7 +247,7 @@ export default function Contact() {
                         href="https://github.com/username"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block text-blue-600 hover:text-blue-800"
+                        className="block text-black underline hover:opacity-70"
                       >
                         GitHub
                       </a>
@@ -280,7 +255,7 @@ export default function Contact() {
                         href="https://linkedin.com/in/username"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block text-blue-600 hover:text-blue-800"
+                        className="block text-black underline hover:opacity-70"
                       >
                         LinkedIn
                       </a>
@@ -288,7 +263,7 @@ export default function Contact() {
                         href="https://twitter.com/username"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block text-blue-600 hover:text-blue-800"
+                        className="block text-black underline hover:opacity-70"
                       >
                         Twitter
                       </a>
@@ -302,41 +277,41 @@ export default function Contact() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-black mb-4">
               よくある質問
             </h2>
-            <p className="text-lg text-gray-600">よくいただく質問と回答</p>
+            <p className="text-lg text-black/70">よくいただく質問と回答</p>
           </div>
 
           <div className="space-y-8">
             <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-black mb-2">
                 プロジェクトの依頼はどのような形式で受け付けていますか？
               </h3>
-              <p className="text-gray-600">
+              <p className="text-black/70">
                 フリーランスとして、リモートワークでのプロジェクトを主に受け付けています。
                 お気軽にメールでご相談ください。
               </p>
             </div>
 
             <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-black mb-2">
                 技術的な相談にも対応していますか？
               </h3>
-              <p className="text-gray-600">
+              <p className="text-black/70">
                 はい、技術的な相談やアドバイスも喜んでお受けします。特にReact、
                 Next.js、Node.jsに関する相談を多く受けています。
               </p>
             </div>
 
             <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-black mb-2">
                 料金体系について教えてください
               </h3>
-              <p className="text-gray-600">
+              <p className="text-black/70">
                 プロジェクトの規模や内容によって料金は変動します。詳細については、
                 お問い合わせいただいた際にご相談させていただきます。
               </p>
